@@ -1,0 +1,65 @@
+﻿<?php
+/**
+ * Created by PhpStorm.
+ * Time: 0:57
+ */
+
+class Ajax extends CI_Model {
+
+    function __construct()
+    {
+        iconv_set_encoding("internal_encoding", "UTF-8");
+        iconv_set_encoding("input_encoding", "UTF-8");
+        iconv_set_encoding("output_encoding", "UTF-8");
+
+        $this->mysqli = $GLOBALS['$mysqli'];
+
+        var_dump(iconv("CP1252", "UTF-8//IGNORE", $_POST['value']));
+        var_dump(iconv("utf-8", "cp1251", $_POST['value']));
+
+        $this->table = $_POST['table'];
+        $this->id = $_POST['id'];
+        $this->order = $_POST['order'];
+        $this->reference = $_POST['reference'];
+        $this->value = $_POST['value']==""?"NULL":$_POST['value'];
+
+
+
+        $this->prepare_sql();
+    }
+
+    function prepare_sql(){
+        $relations = array(
+            0 => "id",
+            1 => "reference",
+            2 => "name",
+            3 => "unit",
+            4 => "packaging",
+            5 => "wholesale_price",
+            6 => "price",
+            7 => "category",
+            8 => "subCategory",
+            9 => "supplier",
+            10 => "comment"
+        );
+
+        $this->value = iconv("CP1252", "utf-8", $this->value);
+
+        $value_name = $relations[$this->order];
+
+        if($this->order > 6){
+            $sql = "INSERT INTO products (reference, $value_name)
+                    VALUES ($this->reference, $this->value)
+                    ON DUPLICATE KEY
+                    UPDATE reference = $this->reference, $value_name=$this->value;";
+        }else{
+            $sql = "UPDATE $this->table
+                    SET $value_name = $this->value
+                    WHERE reference = $this->reference;";
+        }
+
+        var_dump($sql);
+
+        $this->mysqli->query($sql);
+    }
+}

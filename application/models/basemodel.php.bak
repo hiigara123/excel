@@ -1,0 +1,31 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * Time: 0:57
+ */
+
+class BaseModel extends CI_Model {
+
+    var $title   = '';
+    var $content = '';
+    var $date    = '';
+
+    function __construct()
+    {
+        $this->mysqli = new mysqli('a127.0.0.1', 'root1', '', 'test');
+
+        if ($this->mysqli->connect_error) {
+            die('Connect Error: ' . $this->mysqli->connect_error);
+        }
+
+        $name = "test".time();
+
+        $this->mysqli->name = $name;
+    }
+
+    function test()
+    {
+        echo 123;
+    }
+
+}

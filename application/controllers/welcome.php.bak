@@ -1,0 +1,56 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Welcome extends CI_Controller {
+
+	public function index()
+	{
+        $this->load->model('mysqlimodel');
+        $GLOBALS['$mysqli'] = $this->mysqlimodel->initialise();
+
+		$this->load->model('basemodel');
+		$this->load->model('categories');
+		$this->load->model('xls');
+
+        if(!empty($_FILES)){
+            $xls_array = $this->xls->get_array();
+
+//            $this->basemodel->delete();
+            $this->basemodel->create_table();
+            $this->basemodel->insert($xls_array);
+//            $this->basemodel->show_tables();
+        }
+
+        $data['base_table'] = $this->basemodel->show_table(false, "base");
+        $data['table_name'] = $this->basemodel->get_table_name();
+
+        $this->load->view('header', $data);
+        $this->load->view('welcome_message', $data);
+	}
+
+    public function create_db(){
+        $this->load->model('mysqlimodel');
+        $GLOBALS['$mysqli'] = $this->mysqlimodel->initialise();
+        $this->load->model('basemodel');
+        $this->basemodel->create_db();
+    }
+
+    public function compare(){
+        $this->load->model('mysqlimodel');
+        $GLOBALS['$mysqli'] = $this->mysqlimodel->initialise();
+        $this->load->model('basemodel');
+        $data['compare_table'] = $this->basemodel->compare();
+        $data['new_positions'] = $this->basemodel->new_products();
+        $data['zero_positions'] = $this->basemodel->zero_products();
+        $data['table_name'] = $this->basemodel->get_table_name();
+
+        $this->load->view('header', $data);
+        $this->load->view('compare', $data);
+    }
+
+    public function ajax(){
+        $this->load->model('mysqlimodel');
+        $GLOBALS['$mysqli'] = $this->mysqlimodel->initialise();
+        $this->load->model('ajax');
+    }
+
+}
