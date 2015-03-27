@@ -4,7 +4,7 @@
  * Time: 1:38
  */
 
-class Xls_linux extends CI_Model {
+class Xls extends CI_Model {
     function __construct()
     {
         ini_set('memory_limit', '-1');
@@ -33,7 +33,6 @@ class Xls_linux extends CI_Model {
         /** PHPExcel_IOFactory */
         include FCPATH.'/phpexcel/Classes/PHPExcel/IOFactory.php';
         $fileName1 = $path.$_FILES['userfile']['name'];
-//        $fileName1 = $path."Short1.xls";
         $objPHPExcel = PHPExcel_IOFactory::load($fileName1);
 
         $objWriter = new PHPExcel_Writer_CSV($objPHPExcel, "CSV");
@@ -94,16 +93,17 @@ class Xls_linux extends CI_Model {
         $number = str_replace(array("0 00", "0 0", "0 "), "", $number);
 
         if($type_price){
-            $number = explode(".", $number);
+            $number = explode(",", $number);
 
-            if(count($number)>1){
+            if(count($number)>=2){
                 if(strlen($number[1])>2){
                     $number[1] = substr($number[1], 0, 3)/10;
                     $number[1] = round($number[1], 0)*10;
                     $number[1] = substr($number[1], 0, 2);
                 }
 
-                $number = $number[0].".".$number[1];
+                $number = $number[0].",".$number[1];
+
             }else{
                 $number = $number[0];
             }

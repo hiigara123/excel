@@ -57,14 +57,16 @@ class Categories extends CI_Model {
         ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;");
 
         $this->mysqli->query("CREATE TABLE IF NOT EXISTS `prices` (
-          `reference` int(12) DEFAULT NULL,
-          `date` datetime DEFAULT CURRENT_TIMESTAMP,
+          `reference` int(12) NOT NULL DEFAULT '0',
+          `date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           `bezocheredi` varchar(1000) DEFAULT NULL,
           `productoff` varchar(1000) DEFAULT NULL,
           `ambar` varchar(1000) DEFAULT NULL,
-          `8nog` varchar(1000) DEFAULT NULL,
+          `wnog` varchar(1000) DEFAULT NULL,
+          `citymarket` varchar(1000) DEFAULT NULL,
+          `fozzy` varchar(1000) DEFAULT NULL,
           PRIMARY KEY (`reference`)
-        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;");
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
         $cats = $this->mysqli->query('select count(ID) from categories;');
         $cats = $cats->fetch_array();
@@ -79,7 +81,7 @@ class Categories extends CI_Model {
             $this->mysqli->query("INSERT INTO `categories` (`reference`, `name`) VALUES ".substr($cat_values, 0, -1));
         }
 
-        $this->mysqli->query("CREATE TABLE IF NOT EXISTS `subCategories` (
+        $this->mysqli->query("CREATE TABLE IF NOT EXISTS `subcategories` (
           `ID` int(11) NOT NULL AUTO_INCREMENT,
           `parent_reference` varchar(1000) DEFAULT NULL,
           `reference` varchar(1000) DEFAULT NULL,
@@ -87,7 +89,7 @@ class Categories extends CI_Model {
           PRIMARY KEY (`ID`)
         ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;");
 
-        $subCats = $this->mysqli->query('select count(ID) from subCategories;');
+        $subCats = $this->mysqli->query('select count(ID) from subcategories;');
         $subCats = $subCats->fetch_array();
 
         if(($subCats[0])==0){
@@ -97,7 +99,7 @@ class Categories extends CI_Model {
                 $subCats_values .= "('".$ref."', '".$arr[0]."', '".$arr[1]."'),";
             }
 
-            $this->mysqli->query("INSERT INTO `subCategories` (`reference`, `parent_reference`, `name`) VALUES ".substr($subCats_values, 0, -1));
+            $this->mysqli->query("INSERT INTO `subcategories` (`reference`, `parent_reference`, `name`) VALUES ".substr($subCats_values, 0, -1));
         }
 
         $this->mysqli->query("CREATE TABLE IF NOT EXISTS `suppliers` (

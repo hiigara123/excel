@@ -7,16 +7,10 @@ class Welcome extends CI_Controller {
         $this->load->model('mysqlimodel');
         $GLOBALS['$mysqli'] = $this->mysqlimodel->initialise();
 
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            $this->xls_model = "xls_win";
-        } else {
-            $this->xls_model = "xls_linux";
-        }
-
         $this->load->model('basemodel');
         if($this->basemodel->check_db()){
             $this->load->model('categories');
-            $this->load->model($this->xls_model);
+            $this->load->model('xls');
 
             $data['table_name'] = $this->basemodel->get_table_name();
             $data['input_selects'] = $this->basemodel->get_input_select();
@@ -25,16 +19,15 @@ class Welcome extends CI_Controller {
         }
     }
 
-	public function index()
-	{
+    public function index()
+    {
         if(!$this->basemodel->check_db()){
             header("Location: ./create_db");
             die();
         }
 
         if(isset($_FILES[key($_FILES)]['size']) && $_FILES[key($_FILES)]['size'] > 0){
-            $xls_model = $this->xls_model;
-            $xls_array = $this->$xls_model->get_array();
+            $xls_array = $this->xls->get_array();
 
             $this->basemodel->create_table();
             $this->basemodel->insert($xls_array);
@@ -42,8 +35,7 @@ class Welcome extends CI_Controller {
 
         $data['tables'] = $this->basemodel->show_tables("select");
         $this->load->view('show', $data);
-
-	}
+    }
 
     public function show(){
         if($this->uri->segment(2)){
@@ -53,7 +45,6 @@ class Welcome extends CI_Controller {
             $data['tables'] = $this->basemodel->show_tables("select");
             $this->load->view('show', $data);
         }
-
     }
 
     public function create_db(){
@@ -78,7 +69,7 @@ class Welcome extends CI_Controller {
 
     public function prices(){
         $this->load->model('prices');
-    //        $this->prices->parse();
+        //        $this->prices->parse();
         $data['categories'] = $this->prices->get_categories_total();
         $data['competitors'] = $this->prices->get_competitors();
         $data['table'] = $this->prices->get_table();

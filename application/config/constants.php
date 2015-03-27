@@ -38,7 +38,7 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
 define('EXCEL_HOST', '127.0.0.1');
 define('EXCEL_USER', 'root');
-define('EXCEL_PASSWORD', '123123');
+define('EXCEL_PASSWORD', '');
 define('EXCEL_DATABASE', 'main');
 
 

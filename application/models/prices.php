@@ -1,9 +1,6 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Тимур
- * Date: 17.09.14
- * Time: 14:43
  */
 
 header('Content-Type: text/html; charset=utf-8');
@@ -17,6 +14,8 @@ class Prices extends CI_Model {
         "productoff" => "productoff.com",
         "ambar" => "ambar.ua",
         "wnog" => "8nog.com.ua",
+        "citymarket" => "citymarket.com.ua",
+        "fozzy" => "fozzy.com.ua",
     );
 
     var $competitors_from_url;
@@ -98,7 +97,7 @@ class Prices extends CI_Model {
 
         $sql = "
             SELECT t1.reference, t1.name, t4.name as catname, t5.name, t1.wholesale_price,
-            t3.bezocheredi, t3.productoff, t3.ambar, t3.wnog
+            t3.bezocheredi, t3.productoff, t3.ambar, t3.wnog, t3.citymarket, t3.fozzy
             FROM $this->name t1
             JOIN products t2
             ON t1.reference = t2.reference
@@ -108,7 +107,7 @@ class Prices extends CI_Model {
             ON t2.category = t4.reference
             JOIN subcategories t5
             ON t2.subcategory = t5.reference
-            WHERE t2.category IN($this->categories) AND t2.subCategory IN($this->subcategories)
+            WHERE t2.category IN($this->categories) AND t2.subcategory IN($this->subcategories)
             GROUP BY t1.reference ORDER BY t2.category
             LIMIT $this->limit";
 
@@ -123,6 +122,7 @@ class Prices extends CI_Model {
         <td>Артикул</td><td>Название</td><td>Цена опт.</td>
         <td class="bezocheredi">bezocheredi</td><td class="productoff">productoff</td>
         <td class="ambar">ambar</td><td class="wnog">wnog</td>
+        <td class="citymarket">citymarket</td><td class="fozzy">fozzy</td>
         </tr>';
 
         $prev_category = '';
@@ -190,8 +190,6 @@ class Prices extends CI_Model {
 
         foreach($refs as $row){
             foreach($this->competitors_from_url as $name => $link){
-
-
                 echo "Поиск цены товара ".$row[0]." на сайте <b>$name</b>...<br>";
                 flush();
                 ob_flush();
@@ -201,7 +199,6 @@ class Prices extends CI_Model {
                     echo 'Ошибка: <span style="color:red">',  $e->getMessage(), "</span><br><br>";
                     $price = "—";
                 }
-
                 $this->update_price($row[0], $name, $price);
                 flush();
                 ob_flush();
@@ -293,6 +290,43 @@ class Prices extends CI_Model {
                 if(!isset($matches[1]))
                     throw new Exception('товар не обнаружен.');
                 $price = $matches[1][0];
+                break;
+
+            case 'fozzy':
+                $url = "http://fozzy.com.ua/search?controller=search&orderby=position&orderway=desc&search_query=";
+                $url .= $reference;
+                $html = file_get_contents($url);
+                $doc = new DOMDocument();
+                $doc->loadHTML('<meta http-equiv="content-type" content="text/html; charset=utf-8">'.$html);
+                $finder = new DomXPath($doc);
+                $classname="product-price";
+                $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
+                if(!is_object($nodes->item(0)))
+                    throw new Exception('товар не обнаружен.');
+                $html = $nodes->item(0)->textContent;
+                $price = trim($html);
+                $price = explode(" ", $price);
+                if(!isset($price[0]))
+                    throw new Exception('товар не обнаружен.');
+                $price = str_replace(",", ".", $price[0]);
+                break;
+
+            case 'citymarket':
+                $url = "http://citymarket.com.ua/search?controller=search&orderby=position&orderway=desc&search_query=";
+                $url .= $reference;
+//                $url .= 402623;
+                $html = file_get_contents($url);
+                $doc = new DOMDocument();
+                $doc->loadHTML('<meta http-equiv="content-type" content="text/html; charset=utf-8">'.$html);
+                $finder = new DomXPath($doc);
+                $classname="product-container-wrapper";
+                $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
+                $html = $doc->saveHtml($nodes->item(0));
+                $pattern = "/<span class=\"price\">(.*?)<span class=\"coins\">(.*?)<\\/span>/si";
+                preg_match($pattern, $html, $matches);
+                if(!isset($matches[1]))
+                    throw new Exception('товар не обнаружен.');
+                $price = trim($matches[1]).".".trim($matches[2]);
                 break;
         }
 
