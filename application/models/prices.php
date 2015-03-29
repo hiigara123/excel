@@ -5,7 +5,7 @@
 
 header('Content-Type: text/html; charset=utf-8');
 
-ini_set("default_socket_timeout", 2);
+ini_set("default_socket_timeout", 3);
 
 class Prices extends CI_Model {
 
@@ -216,6 +216,7 @@ class Prices extends CI_Model {
             case 'productoff':
                 $url = "http://www.produktoff.com/search.html?q=";
                 $url .= $reference;
+                $this->show_url($url);
                 $html = file_get_contents($url);
                 $doc = new DOMDocument();
                 $doc->loadHTML('<meta http-equiv="content-type" content="text/html; charset=utf-8">'.$html);
@@ -231,6 +232,7 @@ class Prices extends CI_Model {
             case 'bezocheredi':
                 $url = "http://bezocheredi.kiev.ua/products?keyword=";
                 $url .= $reference;
+                $this->show_url($url);
                 $html = file_get_contents($url);
                 $doc = new DOMDocument();
                 $doc->loadHTML('<meta http-equiv="content-type" content="text/html; charset=utf-8">'.$html);
@@ -254,6 +256,7 @@ class Prices extends CI_Model {
             case 'wnog':
                 $url = "http://8nog.com.ua/kupit-kharkov/search/?q=";
                 $url .= $reference;
+                $this->show_url($url);
                 $html = file_get_contents($url);
                 $doc = new DOMDocument();
                 $doc->loadHTML('<meta http-equiv="content-type" content="text/html; charset=utf-8">'.$html);
@@ -284,7 +287,8 @@ class Prices extends CI_Model {
                 $reference = $reference[1];
                 $url = "http://www.ambar.ua/ru/results/?q=";
                 $url .= $reference;
-                $html = file_get_contents($url);
+                $this->show_url($url);
+                $html = file_get_contents(urlencode($url));
                 $pattern = "/product_price2[^>]*rel=\"(.*?)\">/i";
                 preg_match_all($pattern, $html, $matches);
                 if(!isset($matches[1]))
@@ -295,6 +299,7 @@ class Prices extends CI_Model {
             case 'fozzy':
                 $url = "http://fozzy.com.ua/search?controller=search&orderby=position&orderway=desc&search_query=";
                 $url .= $reference;
+                $this->show_url($url);
                 $html = file_get_contents($url);
                 $doc = new DOMDocument();
                 $doc->loadHTML('<meta http-equiv="content-type" content="text/html; charset=utf-8">'.$html);
@@ -315,6 +320,7 @@ class Prices extends CI_Model {
                 $url = "http://citymarket.com.ua/search?controller=search&orderby=position&orderway=desc&search_query=";
                 $url .= $reference;
 //                $url .= 402623;
+                $this->show_url($url);
                 $html = file_get_contents($url);
                 $doc = new DOMDocument();
                 $doc->loadHTML('<meta http-equiv="content-type" content="text/html; charset=utf-8">'.$html);
@@ -340,5 +346,9 @@ class Prices extends CI_Model {
     function get_ambar_reference($reference){
         $this->load->model('xls');
         return $this->xls->get_ambar_csv($reference);
+    }
+
+    function show_url($url){
+        echo "<a target='_blank' href='$url'>".$url."</a><br>";
     }
 }
