@@ -317,6 +317,7 @@ class Prices extends CI_Model {
                 break;
 
             case 'citymarket':
+                ini_set("default_socket_timeout", 30);
                 $url = "http://citymarket.com.ua/search?controller=search&orderby=position&orderway=desc&search_query=";
                 $url .= $reference;
 //                $url .= 402623;
@@ -333,6 +334,7 @@ class Prices extends CI_Model {
                 if(!isset($matches[1]))
                     throw new Exception('товар не обнаружен.');
                 $price = trim($matches[1]).".".trim($matches[2]);
+                ini_set("default_socket_timeout", 3);
                 break;
         }
 
