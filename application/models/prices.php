@@ -97,7 +97,7 @@ class Prices extends CI_Model {
 
         $sql = "
             SELECT t1.reference, t1.name, t4.name as catname, t5.name, t1.wholesale_price,
-            t3.bezocheredi, t3.productoff, t3.ambar, t3.wnog, t3.citymarket, t3.fozzy
+            t3.citymarket, t3.bezocheredi, t3.productoff, t3.ambar, t3.wnog, t3.fozzy
             FROM $this->name t1
             JOIN products t2
             ON t1.reference = t2.reference
@@ -120,9 +120,9 @@ class Prices extends CI_Model {
         $html .= '<table id="prices" class="table">';
         $html .= '<tr>
         <td>Артикул</td><td>Название</td><td>Цена опт.</td>
-        <td class="bezocheredi">bezocheredi</td><td class="productoff">productoff</td>
+        <td class="citymarket">citymarket</td><td class="productoff">productoff</td>
         <td class="ambar">ambar</td><td class="wnog">wnog</td>
-        <td class="citymarket">citymarket</td><td class="fozzy">fozzy</td>
+        <td class="bezocheredi">bezocheredi</td><td class="fozzy">fozzy</td>
         </tr>';
 
         $prev_category = '';
@@ -142,10 +142,11 @@ class Prices extends CI_Model {
                 $i++;
                 if($i==3 or $i==4)
                     continue;
-                if($i==5)
+
+                if($i==6)
                     $main_price = $col;
 
-                if($main_price and is_numeric($col)){
+                if($main_price and is_numeric($col)and is_numeric($main_price)){
                     $class = $main_price<$col?"green":($main_price>$col?"red":"");
                 }
 
