@@ -305,6 +305,14 @@ class Prices extends CI_Model {
                 $doc = new DOMDocument();
                 $doc->loadHTML('<meta http-equiv="content-type" content="text/html; charset=utf-8">'.$html);
                 $finder = new DomXPath($doc);
+                $classname="product_list";
+                $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
+                if ($nodes->length == 0) {
+                    throw new Exception('товар не обнаружен.');
+                }
+                $html = $doc->saveHtml($nodes->item(0));
+                $doc->loadHTML($html);
+                $finder = new DomXPath($doc);
                 $classname="product-price";
                 $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
                 if(!is_object($nodes->item(0)))
@@ -318,24 +326,18 @@ class Prices extends CI_Model {
                 break;
 
             case 'citymarket':
-                ini_set("default_socket_timeout", 30);
                 $url = "http://citymarket.com.ua/search?controller=search&orderby=position&orderway=desc&search_query=";
                 $url .= $reference;
-//                $url .= 402623;
                 $this->show_url($url);
-                $html = file_get_contents($url);
-                $doc = new DOMDocument();
-                $doc->loadHTML('<meta http-equiv="content-type" content="text/html; charset=utf-8">'.$html);
-                $finder = new DomXPath($doc);
-                $classname="product-container-wrapper";
-                $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
-                $html = $doc->saveHtml($nodes->item(0));
-                $pattern = "/<span class=\"price\">(.*?)<span class=\"coins\">(.*?)<\\/span>/si";
-                preg_match($pattern, $html, $matches);
-                if(!isset($matches[1]))
+                $citymarket_db = mysqli_connect('citymarket.com.ua', 'citymarket', 'jdbmJHGtyNM56&^g', 'citymarket');
+                $res = mysqli_query($citymarket_db, "SELECT price FROM `ps_product` WHERE `reference` = $reference");
+                $row = mysqli_fetch_row($res);
+                if(!$row[0])
                     throw new Exception('товар не обнаружен.');
-                $price = trim($matches[1]).".".trim($matches[2]);
-                ini_set("default_socket_timeout", 3);
+                $price = trim($row[0]);
+                $price = explode('.', $price);
+                $price = $price[0].'.'.substr($price[1], 0, -4);
+                mysqli_close($citymarket_db);
                 break;
         }
 
