@@ -298,7 +298,8 @@ class Prices extends CI_Model {
                 break;
 
             case 'fozzy':
-                $url = "http://fozzy.com.ua/search?controller=search&orderby=position&orderway=desc&search_query=";
+                $reference = 8062;
+                $url = "http://fozzy.com.ua/search?controller=search&orderby=reference&orderway=asc&orderway=asc&search_query=";
                 $url .= $reference;
                 $this->show_url($url);
                 $html = file_get_contents($url);
@@ -323,6 +324,10 @@ class Prices extends CI_Model {
                 if(!isset($price[0]))
                     throw new Exception('товар не обнаружен.');
                 $price = str_replace(",", ".", $price[0]);
+                echo '<pre>';
+                var_dump($price);
+                echo '</pre>';
+                die();
                 break;
 
             case 'citymarket':
@@ -334,9 +339,17 @@ class Prices extends CI_Model {
                 $row = mysqli_fetch_row($res);
                 if(!$row[0])
                     throw new Exception('товар не обнаружен.');
+                //наценка
+                $price_up = $res = mysqli_query($citymarket_db, "SELECT reduction FROM `ps_specific_price_rule_up` WHERE `id_specific_price_rule_up` = 1");
+                $row2 = mysqli_fetch_row($price_up);
+                $reduction = (int)$row2[0];
+                if(!$row2[0])
+                    throw new Exception('товар не обнаружен.');
+                //наценка
                 $price = trim($row[0]);
                 $price = explode('.', $price);
-                $price = $price[0].'.'.substr($price[1], 0, -4);
+                $price = ($price[0].'.'.substr($price[1], 0, 2))*"1.$reduction";
+                $price = round($price, 2);
                 mysqli_close($citymarket_db);
                 break;
         }
