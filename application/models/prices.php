@@ -298,7 +298,6 @@ class Prices extends CI_Model {
                 break;
 
             case 'fozzy':
-                $reference = 8062;
                 $url = "http://fozzy.com.ua/search?controller=search&orderby=reference&orderway=asc&orderway=asc&search_query=";
                 $url .= $reference;
                 $this->show_url($url);
@@ -324,10 +323,6 @@ class Prices extends CI_Model {
                 if(!isset($price[0]))
                     throw new Exception('товар не обнаружен.');
                 $price = str_replace(",", ".", $price[0]);
-                echo '<pre>';
-                var_dump($price);
-                echo '</pre>';
-                die();
                 break;
 
             case 'citymarket':
