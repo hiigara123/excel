@@ -19,11 +19,11 @@ header("Pragma: no-cache");
 <div id="header">
     <div>
         <span class="link"><a href="/excel/show">выбрать</a></span>
-        <span class="link"><a href="/excel/show/<?php echo $table_name; ?>"><span id="table_name"><?php echo $table_name; ?></span></a></span>
-        <span class="link"><a href="/excel/compare/<?php echo $table_name; ?>">сравнение</a></span>
-        <span class="link"><a href="/excel/new_products/<?php echo $table_name; ?>">новые</a></span>
-        <span class="link"><a href="/excel/missed_products/<?php echo $table_name; ?>">отсутствующие</a></span>
-        <span class="link"><a href="/excel/prices/<?php echo $table_name; ?>">цены</a></span>
+<!--        <span class="link"><a href="/excel/show/--><?php //echo $table_name; ?><!--"><span id="table_name">--><?php //echo $table_name; ?><!--</span></a></span>-->
+        <span class="link"><a href="/excel/compare/<?php //echo $table_name; ?>">сравнение</a></span>
+        <span class="link"><a href="/excel/new_products/show/<?php //echo $table_name; ?>">новые</a></span>
+        <span class="link"><a href="/excel/missed_products/show/<?php //echo $table_name; ?>">отсутствующие</a></span>
+        <span class="link"><a href="/excel/prices/<?php //echo $table_name; ?>">цены</a></span>
         <form class="file" enctype="multipart/form-data" action="/excel/" method="POST">
             <input type="hidden" name="MAX_FILE_SIZE" value="300000000" />
             <input name="userfile" class="btn btn-small" type="file" title="загрузить прайс-лист" data-filename-placement="inside"/>

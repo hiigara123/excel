@@ -18,6 +18,7 @@ class BaseModel extends CI_Model {
 
         //pagination
         $this->limit = $this->config->item('pagination');
+
         $this->offset = $this->uri->uri_to_assoc(3);
         if(isset($this->offset['page']) && $this->offset['page'] == "all"){
             $this->limit = " LIMIT 999999999";
