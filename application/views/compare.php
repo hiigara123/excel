@@ -6,7 +6,7 @@
     <a class="export" download="<?php echo date("d_m_y_his"); ?>_compare.xls" href="#" ></a>
     <span class="filter filter_compare"></span>
     <br>* - изменения в новой таблице
-    <?php echo $compare_table; ?>
+    <?php echo $compare_table == "equal"?"<h1>Таблицы одинаковы</h1>":$compare_table; ?>
 </div>
 <?php } ?>
 

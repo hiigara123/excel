@@ -53,7 +53,6 @@ class Welcome extends CI_Controller {
 
     public function compare(){
         $data['compare_table'] = $this->basemodel->compare(strpos($this->uri->segment(2), "-")?$this->uri->segment(2):false);
-
         $this->load->view('compare', $data);
     }
 

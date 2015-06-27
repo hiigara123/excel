@@ -19,7 +19,7 @@ header("Pragma: no-cache");
 <div id="header">
     <div>
         <span class="link"><a href="/excel/show">выбрать</a></span>
-<!--        <span class="link"><a href="/excel/show/--><?php //echo $table_name; ?><!--"><span id="table_name">--><?php //echo $table_name; ?><!--</span></a></span>-->
+        <span style="display: none;" class="link"><a href="/excel/show/<?php echo $table_name; ?>"><span id="table_name"><?php echo $table_name; ?></span></a></span>
         <span class="link"><a href="/excel/compare/<?php //echo $table_name; ?>">сравнение</a></span>
         <span class="link"><a href="/excel/new_products/show/<?php //echo $table_name; ?>">новые</a></span>
         <span class="link"><a href="/excel/missed_products/show/<?php //echo $table_name; ?>">отсутствующие</a></span>

@@ -323,6 +323,10 @@ class BaseModel extends CI_Model {
 
         $diff = array_diff($new_products, $old_products);
 
+        if(!empty($new_products) and $new_products == $old_products){
+            return "equal";
+        }
+
         $values = "";
         foreach($diff as $product){
             $product = unserialize($product);
